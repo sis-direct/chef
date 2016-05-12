@@ -6,8 +6,8 @@
 #
 
 if node[:platform_family] == "debian"
-  include_recipe "apt"
   include_recipe "ubuntu"
+  apt_update "packages"
 end
 
 if %w{rhel fedora}.include?(node[:platform_family])

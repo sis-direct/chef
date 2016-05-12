@@ -2,8 +2,8 @@
 # ubuntu cookbook overrides
 #
 
-default["ubuntu"]["archive_url"] = "mirror://mirrors.ubuntu.com/mirrors.txt"
-default["ubuntu"]["security_url"] = "mirror://mirrors.ubuntu.com/mirrors.txt"
+default["ubuntu"]["archive_url"] = "http://us-west-2.ec2.archive.ubuntu.com"
+default["ubuntu"]["security_url"] = "http://us-west-2.ec2.archive.ubuntu.com"
 default["ubuntu"]["include_source_packages"] = true
 default["ubuntu"]["components"] = "main restricted universe multiverse"
 
