@@ -1,3 +1,9 @@
+# this is a test to make sure that we have chef-sugar installed via the gem metadata and
+# can use it in an attributes file.
+
+puts "CHEF SUGAR THINKS WE ARE ON UBUNTU" if ubuntu?
+puts "CHEF SUGAR THINKS WE ARE ON RHEL" if rhel?
+
 #
 # ubuntu cookbook overrides
 #
