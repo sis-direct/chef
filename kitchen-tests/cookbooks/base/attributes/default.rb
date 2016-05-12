@@ -78,3 +78,10 @@ default["resolver"]["search"] = "chef.io"
 
 default["authorization"]["sudo"]["passwordless"] = true
 default["authorization"]["sudo"]["users"] = %w{vagrant centos ubuntu}
+
+
+#
+# nscd cookbook overrides
+#
+
+default["nscd"]["server_user"] = 'nobody'
