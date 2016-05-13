@@ -5,6 +5,9 @@ driver:
     cpus: 4
     memory: 2048
 
+verifier:
+  name: inspec
+
 provisioner:
   name: chef_github
   chef_omnibus_url: "https://omnitruck.chef.io/install.sh"

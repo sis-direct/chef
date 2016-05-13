@@ -7,6 +7,9 @@ driver:
   security_group_ids: ["travis-ci"]
   instance_type: "m3.medium"
 
+verifier:
+  name: inspec
+
 provisioner:
   name: chef_github
   chef_omnibus_url: "https://omnitruck.chef.io/install.sh"
