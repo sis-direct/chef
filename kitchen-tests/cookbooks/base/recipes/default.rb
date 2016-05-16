@@ -5,6 +5,8 @@
 # Copyright (C) 2014
 #
 
+hostname "chef-travis-ci.chef.io"
+
 if node[:platform_family] == "debian"
   include_recipe "ubuntu"
   apt_update "packages"
