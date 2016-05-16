@@ -2,6 +2,9 @@ language: ruby
 sudo: false
 cache: bundler
 
+services:
+  - docker
+
 # Early warning system to catch if Rubygems breaks something
 before_install:
   - gem update --system $(grep rubygems omnibus_overrides.rb | cut -d'"' -f2)
@@ -38,6 +41,7 @@ matrix:
       - echo -n $DO_KEY_CHUNK_{0..30} >> ~/.ssh/id_aws.base64
       - cat ~/.ssh/id_aws.base64 | tr -d ' ' | base64 --decode > ~/.ssh/id_aws.pem
     before_script:
+      - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
       - cd kitchen-tests
     script:
       - if [ "$TRAVIS_SECURE_ENV_VARS" = "true" ]; then bundle exec kitchen test ubuntu-1404; fi

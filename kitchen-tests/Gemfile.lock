@@ -67,12 +67,12 @@ GEM
     hashie (3.4.4)
     hitimes (1.2.4)
     httpclient (2.7.2)
-    inspec (0.21.6)
+    inspec (0.22.0)
       hashie (~> 3.4)
       json (~> 1.8)
       method_source (~> 0.8)
       pry (~> 0)
-      r-train (~> 0.11)
+      r-train (~> 0.12)
       rainbow (~> 2)
       rspec (~> 3)
       rspec-its (~> 1.2)
@@ -83,6 +83,9 @@ GEM
     json (1.8.3)
     json_pure (1.8.3)
     kitchen-appbundle-updater (0.1.2)
+    kitchen-dokken (0.0.29)
+      docker-api (~> 1.26.2)
+      test-kitchen (~> 1.5)
     kitchen-ec2 (1.0.0)
       aws-sdk (~> 2)
       excon
@@ -127,7 +130,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    r-train (0.11.4)
+    r-train (0.12.0)
       docker-api (~> 1.26.2)
       json (~> 1.8)
       mixlib-shellout (~> 2.0)
@@ -216,6 +219,7 @@ PLATFORMS
 DEPENDENCIES
   berkshelf
   kitchen-appbundle-updater
+  kitchen-dokken
   kitchen-ec2
   kitchen-inspec
   kitchen-vagrant
