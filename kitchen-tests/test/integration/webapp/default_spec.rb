@@ -52,14 +52,14 @@ describe service(ssh_service) do
 end
 
 describe sshd_config do
-  its('Protocol') { should cmp 2 }
-  its('GssapiAuthentication') { should cmp 'no' }
-  its('UseDns') { should cmp 'no' }
+  its("Protocol") { should cmp 2 }
+  its("GssapiAuthentication") { should cmp "no" }
+  its("UseDns") { should cmp "no" }
 end
 
 describe ssh_config do
-  its('StrictHostKeyChecking') { should cmp 'no' }
-  its('GssapiAuthentication') { should cmp 'no' }
+  its("StrictHostKeyChecking") { should cmp "no" }
+  its("GssapiAuthentication") { should cmp "no" }
 end
 
 describe package("ntp") do
@@ -123,7 +123,7 @@ describe etc_group.where(group_name: "sysadmin") do
   its("gids") { should eq [2300] }
 end
 
-describe passwd.users('adam') do
+describe passwd.users("adam") do
   its("uids") { should eq ["666"] }
 end
 
