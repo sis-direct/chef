@@ -7,13 +7,26 @@
 #  its("stdout") { should match /Hello, World!/ }
 #end
 
+case os[:family]
+when "debian", "ubuntu"
+  ssh_package = "openssh-client"
+  ssh_service = "ssh"
+  ntp_service = "ntp"
+when "centos", "redhat", "fedora"
+  ssh_package = "openssh-clients"
+  ssh_service = "sshd"
+  ntp_service = "ntpd"
+else
+  raise "i don't know the family #{os[:family]}"
+end
+
 describe package("nscd") do
   it { should be_installed }
 end
 
 describe service("nscd") do
-# broken?
-#  it { should be_enabled }
+  # broken?
+  #  it { should be_enabled }
   it { should be_installed }
   it { should be_running }
 end
@@ -28,23 +41,34 @@ describe service("fail2ban") do
   it { should be_running }
 end
 
-describe package("openssh-client") do
+describe package(ssh_package) do
   it { should be_installed }
 end
 
-describe service("ssh") do
+describe service(ssh_service) do
   it { should be_enabled }
   it { should be_installed }
   it { should be_running }
+end
+
+describe sshd_config do
+  its('Protocol') { should cmp 2 }
+  its('GssapiAuthentication') { should cmp 'no' }
+  its('UseDns') { should cmp 'no' }
+end
+
+describe ssh_config do
+  its('StrictHostKeyChecking') { should cmp 'no' }
+  its('GssapiAuthentication') { should cmp 'no' }
 end
 
 describe package("ntp") do
   it { should be_installed }
 end
 
-describe service("ntp") do
-# broken?
-#  it { should be_enabled }
+describe service(ntp_service) do
+  # broken?
+  #  it { should be_enabled }
   it { should be_installed }
   it { should be_running }
 end
@@ -81,15 +105,17 @@ describe package("autoconf") do
   it { should be_installed }
 end
 
-%w{lsof tcpdump strace zsh dmidecode ltrace bc curl wget telnet subversion git traceroute htop iptraf tmux s3cmd sysbench }.each do |pkg|
+%w{lsof tcpdump strace zsh dmidecode ltrace bc curl wget telnet subversion git traceroute htop tmux s3cmd sysbench }.each do |pkg|
   describe package pkg do
     it { should be_installed }
   end
 end
 
-describe apt("http://us-west-2.ec2.archive.ubuntu.com/ubuntu") do
-  it { should be_enabled }
-  it { should exist }
+if %w{debian ubuntu}.include?(os[:family])
+  describe apt("http://us-west-2.ec2.archive.ubuntu.com/ubuntu") do
+    it { should be_enabled }
+    it { should exist }
+  end
 end
 
 describe etc_group.where(group_name: "sysadmin") do
@@ -97,10 +123,9 @@ describe etc_group.where(group_name: "sysadmin") do
   its("gids") { should eq [2300] }
 end
 
-# broken?
-#describe passwd.filters(users: "adam") do
-#  its("uids") { should eq ["666"] }
-#end
+describe passwd.users('adam') do
+  its("uids") { should eq ["666"] }
+end
 
 describe ntp_conf do
   its("server") { should_not eq nil }
