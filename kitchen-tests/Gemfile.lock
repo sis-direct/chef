@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/lamont-granquist/kitchen-dokken.git
-  revision: 574b2f2848509b2064c27ce15c5b4a121a77b46b
+  revision: 7a7b2a94b04ae428c312fb9afdb0d2fdefaee5e4
   branch: lcg/dokken-github
   specs:
     kitchen-dokken (0.0.29)
@@ -53,7 +53,7 @@ GEM
     celluloid-io (0.16.2)
       celluloid (>= 0.16.0)
       nio4r (>= 1.1.0)
-    chef-config (12.9.41)
+    chef-config (12.10.24)
       fuzzyurl (~> 0.8.0)
       mixlib-config (~> 2.0)
       mixlib-shellout (~> 2.0)
