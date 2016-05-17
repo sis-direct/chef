@@ -88,4 +88,4 @@ suites:
   - name: webapp
     run_list:
       - recipe[base::default]
-      - recipe[webapp::default]
+#      - recipe[webapp::default]
