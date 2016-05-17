@@ -6,4 +6,4 @@ cookbook "base", path: "cookbooks/base"
 cookbook "php", "~> 1.5.0"
 
 
-cookbook "resolver", github: "chef-cookbooks/resolver", tag: "ba7edb12d86678557416fc657cd06c0bdebc1f4e"
+cookbook "resolver", github: "chef-cookbooks/resolver", branch: "lcg/docker"
