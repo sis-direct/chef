@@ -31,16 +31,6 @@ describe service("nscd") do
   it { should be_running }
 end
 
-describe package("fail2ban") do
-  it { should be_installed }
-end
-
-describe service("fail2ban") do
-  it { should be_enabled }
-  it { should be_installed }
-  it { should be_running }
-end
-
 describe package(ssh_package) do
   it { should be_installed }
 end
