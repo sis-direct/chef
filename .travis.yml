@@ -45,7 +45,7 @@ matrix:
     after_failure:
       - cat .kitchen/logs/kitchen.log
     env:
-      - UBUNTU=1
+      - UBUNTU=12.04
       - KITCHEN_YAML=.kitchen.travis.yml
   - rvm: 2.2
     services: docker
@@ -62,7 +62,7 @@ matrix:
     after_failure:
       - cat .kitchen/logs/kitchen.log
     env:
-      - UBUNTU=1
+      - UBUNTU=14.04
       - KITCHEN_YAML=.kitchen.travis.yml
   - rvm: 2.2
     services: docker
@@ -79,7 +79,7 @@ matrix:
     after_failure:
       - cat .kitchen/logs/kitchen.log
     env:
-      - UBUNTU=1
+      - UBUNTU=16.04
       - KITCHEN_YAML=.kitchen.travis.yml
   - rvm: 2.2
     services: docker
@@ -96,7 +96,7 @@ matrix:
     after_failure:
       - cat .kitchen/logs/kitchen.log
     env:
-      - UBUNTU=1
+      - DEBIAN=7
       - KITCHEN_YAML=.kitchen.travis.yml
   - rvm: 2.2
     services: docker
@@ -113,7 +113,7 @@ matrix:
     after_failure:
       - cat .kitchen/logs/kitchen.log
     env:
-      - UBUNTU=1
+      - DEBIAN=8
       - KITCHEN_YAML=.kitchen.travis.yml
   - rvm: 2.2
     services: docker
@@ -130,7 +130,7 @@ matrix:
     after_failure:
       - cat .kitchen/logs/kitchen.log
     env:
-      - UBUNTU=1
+      - CENTOS=5
       - KITCHEN_YAML=.kitchen.travis.yml
   - rvm: 2.2
     services: docker
@@ -147,7 +147,7 @@ matrix:
     after_failure:
       - cat .kitchen/logs/kitchen.log
     env:
-      - UBUNTU=1
+      - CENTOS=6
       - KITCHEN_YAML=.kitchen.travis.yml
   - rvm: 2.2
     services: docker
@@ -164,7 +164,7 @@ matrix:
     after_failure:
       - cat .kitchen/logs/kitchen.log
     env:
-      - UBUNTU=1
+      - CENTOS=7
       - KITCHEN_YAML=.kitchen.travis.yml
   - rvm: 2.2
     services: docker
@@ -181,7 +181,7 @@ matrix:
     after_failure:
       - cat .kitchen/logs/kitchen.log
     env:
-      - UBUNTU=1
+      - FEDORA=23
       - KITCHEN_YAML=.kitchen.travis.yml
   - rvm: 2.2
     services: docker
@@ -198,7 +198,7 @@ matrix:
     after_failure:
       - cat .kitchen/logs/kitchen.log
     env:
-      - UBUNTU=1
+      - OPENSUSE=13.2
       - KITCHEN_YAML=.kitchen.travis.yml
 
   allow_failures:
