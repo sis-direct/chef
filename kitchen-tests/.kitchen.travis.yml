@@ -1,14 +1,13 @@
 ---
 driver:
   name: dokken
-  chef_version: latest
   privileged: true
 
 transport:
   name: dokken
 
 provisioner:
-  name: dokken_github
+  name: chef_github
   chef_omnibus_url: "https://omnitruck.chef.io/install.sh"
   chef_omnibus_install_options: "-c current"
   github_owner: "chef"
