@@ -73,10 +73,6 @@ describe service(ntp_service) do
   it { should be_running }
 end
 
-describe package("chef") do
-  it { should be_installed }
-end
-
 describe service("chef-client") do
   it { should be_enabled }
   it { should be_installed }
