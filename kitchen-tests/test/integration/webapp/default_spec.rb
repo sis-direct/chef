@@ -118,8 +118,8 @@ describe ntp_conf do
 end
 
 # busted inside of docker containers?
-#describe port(22) do
-#  it { should be_listening }
-#  its("protocols") { should include "tcp" }
-#  its("processes") { should eq ["sshd"] }
-#end
+describe port(22) do
+  it { should be_listening }
+  its("protocols") { should include "tcp" }
+  its("processes") { should eq ["sshd"] }
+end
