@@ -35,8 +35,6 @@ include_recipe "chef-client"
 
 include_recipe "openssh"
 
-include_recipe "fail2ban"
-
 include_recipe "nscd"
 
 include_recipe "logrotate"
