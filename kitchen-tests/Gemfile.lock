@@ -14,13 +14,13 @@ GEM
   specs:
     addressable (2.4.0)
     artifactory (2.3.2)
-    aws-sdk (2.3.2)
-      aws-sdk-resources (= 2.3.2)
-    aws-sdk-core (2.3.2)
+    aws-sdk (2.3.4)
+      aws-sdk-resources (= 2.3.4)
+    aws-sdk-core (2.3.4)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.3.2)
-      aws-sdk-core (= 2.3.2)
-    berkshelf (4.3.2)
+    aws-sdk-resources (2.3.4)
+      aws-sdk-core (= 2.3.4)
+    berkshelf (4.3.3)
       addressable (~> 2.3, >= 2.3.4)
       berkshelf-api-client (~> 2.0, >= 2.0.2)
       buff-config (~> 1.0)
@@ -54,7 +54,7 @@ GEM
     celluloid-io (0.16.2)
       celluloid (>= 0.16.0)
       nio4r (>= 1.1.0)
-    chef-config (12.9.41)
+    chef-config (12.10.24)
       fuzzyurl (~> 0.8.0)
       mixlib-config (~> 2.0)
       mixlib-shellout (~> 2.0)
@@ -104,7 +104,7 @@ GEM
     octokit (4.3.0)
       sawyer (~> 0.7.0, >= 0.5.3)
     retryable (2.0.3)
-    ridley (4.5.0)
+    ridley (4.5.1)
       addressable
       buff-config (~> 1.0)
       buff-extensions (~> 1.0)
@@ -170,4 +170,4 @@ DEPENDENCIES
   vagrant-wrapper
 
 BUNDLED WITH
-   1.12.1
+   1.11.2
