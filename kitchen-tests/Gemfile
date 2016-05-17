@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "berkshelf"
 gem "kitchen-appbundle-updater"
-gem "kitchen-dokken"
+gem "kitchen-dokken", github: "lamont-granquist/kitchen-dokken", branch: "lcg/dokken-github"
 gem "kitchen-ec2"
 gem "kitchen-inspec"
 gem "kitchen-vagrant"
