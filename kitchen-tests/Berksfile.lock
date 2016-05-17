@@ -2,6 +2,10 @@ DEPENDENCIES
   base
     path: cookbooks/base
   php (~> 1.5.0)
+  resolver
+    git: git://github.com/chef-cookbooks/resolver.git
+    revision: ba7edb12d86678557416fc657cd06c0bdebc1f4e
+    tag: ba7edb12d86678557416fc657cd06c0bdebc1f4e
   webapp
     path: cookbooks/webapp
 
@@ -82,7 +86,7 @@ GRAPH
     apt (>= 1.9.0)
     build-essential (>= 0.0.0)
     openssl (~> 4.0)
-  resolver (1.3.0)
+  resolver (1.3.1)
   selinux (0.9.0)
   seven_zip (2.0.0)
     windows (>= 1.2.2)
