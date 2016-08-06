@@ -27,6 +27,7 @@ require "chef/handler/error_report"
 require "chef/workstation_config_loader"
 require "chef/mixin/shell_out"
 require "chef-config/mixin/dot_d"
+require "mixlib/archive"
 
 class Chef::Application::Client < Chef::Application
   include Chef::Mixin::ShellOut
@@ -39,6 +40,14 @@ class Chef::Application::Client < Chef::Application
     :short => "-c CONFIG",
     :long  => "--config CONFIG",
     :description => "The configuration file to use"
+
+  option :config_option,
+    :long         => "--config-option OPTION=VALUE",
+    :description  => "Override a single configuration option",
+    :proc         => lambda { |option, existing|
+      (existing ||= []) << option
+      existing
+    }
 
   option :formatter,
     :short        => "-F FORMATTER",
@@ -324,7 +333,7 @@ class Chef::Application::Client < Chef::Application
 
     if Chef::Config[:recipe_url]
       if !Chef::Config.local_mode
-        Chef::Application.fatal!("chef-client recipe-url can be used only in local-mode", 1)
+        Chef::Application.fatal!("chef-client recipe-url can be used only in local-mode")
       else
         if Chef::Config[:delete_entire_chef_repo]
           Chef::Log.debug "Cleanup path #{Chef::Config.chef_repo_path} before extract recipes into it"
@@ -334,8 +343,7 @@ class Chef::Application::Client < Chef::Application
         FileUtils.mkdir_p(Chef::Config.chef_repo_path)
         tarball_path = File.join(Chef::Config.chef_repo_path, "recipes.tgz")
         fetch_recipe_tarball(Chef::Config[:recipe_url], tarball_path)
-        result = shell_out!("tar zxvf #{tarball_path} -C #{Chef::Config.chef_repo_path}")
-        Chef::Log.debug "#{result.stdout}"
+        Mixlib::Archive.new(tarball_path).extract(Chef::Config.chef_repo_path, perms: false, ignore: /^\.$/)
       end
     end
 
@@ -420,7 +428,7 @@ class Chef::Application::Client < Chef::Application
       rescue SystemExit
         raise
       rescue Exception => e
-        Chef::Application.fatal!("#{e.class}: #{e.message}", 1)
+        Chef::Application.fatal!("#{e.class}: #{e.message}", e)
       end
     else
       interval_run_chef_client
@@ -463,7 +471,7 @@ class Chef::Application::Client < Chef::Application
       retry
     end
 
-    Chef::Application.fatal!("#{e.class}: #{e.message}", 1)
+    Chef::Application.fatal!("#{e.class}: #{e.message}", e)
   end
 
   def test_signal

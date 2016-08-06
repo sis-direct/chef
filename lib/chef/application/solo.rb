@@ -29,6 +29,7 @@ require "fileutils"
 require "chef/mixin/shell_out"
 require "pathname"
 require "chef-config/mixin/dot_d"
+require "mixlib/archive"
 
 class Chef::Application::Solo < Chef::Application
   include Chef::Mixin::ShellOut
@@ -39,6 +40,14 @@ class Chef::Application::Solo < Chef::Application
     :long  => "--config CONFIG",
     :default => Chef::Config.platform_specific_path("/etc/chef/solo.rb"),
     :description => "The configuration file to use"
+
+  option :config_option,
+    :long         => "--config-option OPTION=VALUE",
+    :description  => "Override a single configuration option",
+    :proc         => lambda { |option, existing|
+      (existing ||= []) << option
+      existing
+    }
 
   option :formatter,
     :short        => "-F FORMATTER",
@@ -212,6 +221,7 @@ class Chef::Application::Solo < Chef::Application
   def run
     setup_signal_handlers
     reconfigure
+    for_ezra if Chef::Config[:ez]
     if !Chef::Config[:solo_legacy_mode]
       Chef::Application::Client.new.run
     else
@@ -232,6 +242,21 @@ class Chef::Application::Solo < Chef::Application
     Chef::Log.deprecation("-r MUST be changed to --recipe-url, the -r option will be changed in Chef 13.0") if ARGV.include?("-r")
 
     if !Chef::Config[:solo_legacy_mode]
+      # Because we re-parse ARGV when we move to chef-client, we need to tidy up some options first.
+      ARGV.delete("--ez")
+
+      # -r means something entirely different in chef-client land, so let's replace it with a "safe" value
+      if dash_r = ARGV.index("-r")
+        ARGV[dash_r] = "--recipe-url"
+      end
+
+      # For back compat reasons, we need to ensure that we try and use the cache_path as a repo first
+      Chef::Log.debug "Current chef_repo_path is #{Chef::Config.chef_repo_path}"
+
+      if !Chef::Config.has_key?(:cookbook_path) && !Chef::Config.has_key?(:chef_repo_path)
+        Chef::Config.chef_repo_path = Chef::Config.find_chef_repo_path(Chef::Config[:cache_path])
+      end
+
       Chef::Config[:local_mode] = true
     else
       configure_legacy_mode!
@@ -257,8 +282,7 @@ class Chef::Application::Solo < Chef::Application
       FileUtils.mkdir_p(recipes_path)
       tarball_path = File.join(recipes_path, "recipes.tgz")
       fetch_recipe_tarball(Chef::Config[:recipe_url], tarball_path)
-      result = shell_out!("tar zxvf #{tarball_path} -C #{recipes_path}")
-      Chef::Log.debug "#{result.stdout}"
+      Mixlib::Archive.new(tarball_path).extract(Chef::Config.chef_repo_path, perms: false, ignore: /^\.$/)
     end
 
     # json_attribs shuld be fetched after recipe_url tarball is unpacked.
@@ -277,7 +301,6 @@ class Chef::Application::Solo < Chef::Application
   end
 
   def run_application
-    for_ezra if Chef::Config[:ez]
     if !Chef::Config[:client_fork] || Chef::Config[:once]
       # Run immediately without interval sleep or splay
       begin
@@ -285,7 +308,7 @@ class Chef::Application::Solo < Chef::Application
       rescue SystemExit
         raise
       rescue Exception => e
-        Chef::Application.fatal!("#{e.class}: #{e.message}", 1)
+        Chef::Application.fatal!("#{e.class}: #{e.message}", e)
       end
     else
       interval_run_chef_client
@@ -332,7 +355,7 @@ EOH
           Chef::Log.debug("#{e.class}: #{e}\n#{e.backtrace.join("\n")}")
           retry
         else
-          Chef::Application.fatal!("#{e.class}: #{e.message}", 1)
+          Chef::Application.fatal!("#{e.class}: #{e.message}", e)
         end
       end
     end
