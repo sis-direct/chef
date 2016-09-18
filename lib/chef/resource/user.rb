@@ -21,6 +21,7 @@ require "chef/resource"
 class Chef
   class Resource
     class User < Chef::Resource
+      resource_name :user_resource_abstract_base_class # this prevents magickal class name DSL wiring
       identity_attr :username
 
       state_attrs :uid, :gid, :home
@@ -42,8 +43,8 @@ class Chef
         @force = false
         @non_unique = false
         @supports = {
-          :manage_home => false,
-          :non_unique => false,
+          manage_home: false,
+          non_unique: false,
         }
         @iterations = 27855
         @salt = nil
@@ -155,6 +156,19 @@ class Chef
         )
       end
 
+      def supports(args = {})
+        if args.key?(:manage_home)
+          Chef.log_deprecation "supports { manage_home: #{args[:manage_home]} } on the user resource is deprecated and will be removed in Chef 13, set manage_home: #{args[:manage_home]} instead"
+        end
+        if args.key?(:non_unique)
+          Chef.log_deprecation "supports { non_unique: #{args[:non_unique]} } on the user resource is deprecated and will be removed in Chef 13, set non_unique: #{args[:non_unique]} instead"
+        end
+        super
+      end
+
+      def supports=(args)
+        supports(args)
+      end
     end
   end
 end

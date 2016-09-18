@@ -16,13 +16,19 @@ if %w{rhel fedora}.include?(node["platform_family"])
   include_recipe "selinux::disabled"
 end
 
-if node["platform_family"] == "rhel"
-  include_recipe "yum-epel"
+yum_repository "epel" do
+  enabled true
+  description "Extra Packages for Enterprise Linux #{node['platform_version'].to_i} - $basearch"
+  failovermethod "priority"
+  gpgkey "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-#{node['platform_version'].to_i}"
+  gpgcheck true
+  mirrorlist "https://mirrors.fedoraproject.org/metalink?repo=epel-#{node['platform_version'].to_i}&arch=$basearch"
+  only_if { node["platform_family"] == "rhel" }
 end
 
 include_recipe "build-essential"
 
-include_recipe "#{cookbook_name}::packages"
+include_recipe "::packages"
 
 include_recipe "ntp"
 
@@ -44,3 +50,5 @@ include_recipe "openssh"
 include_recipe "nscd"
 
 include_recipe "logrotate"
+
+include_recipe "::tests"

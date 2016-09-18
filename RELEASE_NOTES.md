@@ -1,35 +1,44 @@
 *This file holds "in progress" release notes for the current release under development and is intended for consumption by the Chef Documentation team.
 Please see `https://docs.chef.io/release/<major>-<minor>/release_notes.html` for the official Chef release notes.*
 
-# Chef Client Release Notes 12.12:
+# Chef Client Release Notes 12.14:
 
-## Attribute read/write/unlink/exist? APIs
+## Highlighted enhancements for this release:
 
-On the node object:
+* Upgraded Ruby version from 2.1.9 to 2.3.1 which adds several performance and functionality enhancements.
+* Added a small patch to Ruby 2.3.1 and improvements to the Ohai Network plugin in order to support chef client runs on Windows Nano Server.
+* Added the ability to mark a property of a custom resource as "sensitive." This will suppress the property's value when it's used in other outputs, such as messages used by the [Data Collector](https://github.com/chef/chef-rfc/blob/master/rfc077-mode-agnostic-data-collection.md). To use, add `sensitive: true` when definine the property. Example:
 
-- `node.read("foo", "bar", "baz")` equals `node["foo"]["bar"]["baz"] `but with safety (nil instead of exception)
-- `node.read!("foo", "bar", "baz")` equals `node["foo"]["bar"]["baz"]` and does raises NoMethodError
+  ```ruby
+  property :db_password, String, sensitive: true
+  ```
 
-- `node.write(:default, "foo", "bar", "baz")` equals `node.default["foo"]["bar"] = "baz"` and autovivifies and replaces intermediate non-hash objects (very safe) 
-- `node.write!(:default, "foo", "bar", "baz")` equals `node.default["foo"]["bar"] = "baz"` and while it autovivifies it can raise if you hit a non-hash on an intermediate key (NoMethodError)
-- there is still no non-autovivifying writer, and i don't think anyone really wants one.
-- `node.exist?("foo", "bar")` can be used to see if `node["foo"]["bar"]` exists
+* Ported the yum_repository resource from the yum cookbook to core chef. With this change you can create and remove repositories without depending on the yum cookbook. Example:
 
-On node levels:
+  ```ruby
+  yum_repository 'OurCo' do
+    description 'OurCo yum repository'
+    mirrorlist 'http://artifacts.ourco.org/mirrorlist?repo=ourco-6&arch=$basearch'
+    gpgkey 'http://artifacts.ourco.org/pub/yum/RPM-GPG-KEY-OURCO-6'
+    action :create
+  end
 
-- `node.default.read/read!("foo")` operates similarly to `node.read("foo")` but only on default level
-- `node.default.write/write!("foo", "bar")` is `node.write/write!(:default, "foo", "bar")`
-- `node.default.unlink/unlink!("foo")` is `node.unlink/unlink!(:default, "foo")`
-- `node.default.exist?("foo", "bar")` can be used to see if `node.default["foo"]["bar"]` exists
+  yum 'Oldrepo' do
+    action :delete
+  end
+  ```
 
-Deprecations:
+* Support for Solaris releases before 10u11 has been removed
+* Upgraded Ohai to 8.20 with new / enhanced plugins. See the [ohai changelog](https://github.com/chef-cookbooks/ohai/blob/master/CHANGELOG.md)
 
-- node.set is deprecated
-- node.set_unless is deprecated
+## Highlighted bug fixes for this release:
 
-## `data_collector` enhancements
+Fixed `chef_gem` for local gems with remote dependencies. A recent chef release introduced a breaking change which added the `--local` argument to `gem installs` for local gems prohibiting remote dependencies from being installed. Users who want to ensure that gem installs remain completely local should add `--local` to the `options` property:
 
-- Adds `node` to the `data_collector` message
-- `data_collector` reports on all resources and not just those that have been processed
-
-## `knife cookbook create` is deprecated. Use the chef-dk's `chef generate cookbook` instead.
+```
+chef_gem 'my-gem' do
+  source '/tmp/gems/my-gem.gem'
+  options '--local'
+  action :install
+end
+```

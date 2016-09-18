@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.email = "adam@chef.io"
   s.homepage = "http://www.chef.io"
 
-  s.required_ruby_version = ">= 2.1.0"
+  s.required_ruby_version = ">= 2.2.0"
 
   s.add_dependency "chef-config", "= #{Chef::VERSION}"
 
@@ -32,10 +32,11 @@ Gem::Specification.new do |s|
   s.add_dependency "erubis", "~> 2.7"
   s.add_dependency "diff-lcs", "~> 1.2", ">= 1.2.4"
 
-  s.add_dependency "chef-zero", "~> 4.8"
+  s.add_dependency "chef-zero", ">= 4.8"
 
   s.add_dependency "plist", "~> 3.2"
   s.add_dependency "iniparse", "~> 1.4"
+  s.add_dependency "addressable"
 
   # Audit mode requires these, so they are non-developmental dependencies now
   %w{rspec-core rspec-expectations rspec-mocks}.each { |gem| s.add_dependency gem, "~> 3.5" }

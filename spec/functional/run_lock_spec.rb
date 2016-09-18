@@ -46,11 +46,9 @@ describe Chef::RunLock do
     end
 
     WAIT_ON_LOCK_TIME = 1.0
-    def wait_on_lock
+    def wait_on_lock(from_fork)
       Timeout.timeout(WAIT_ON_LOCK_TIME) do
-        until File.exist?(lockfile)
-          sleep 0.1
-        end
+        from_fork.readline
       end
     rescue Timeout::Error
       raise "Lockfile never created, abandoning test"
@@ -259,14 +257,16 @@ describe Chef::RunLock do
     it "test returns true and acquires the lock" do
       run_lock = Chef::RunLock.new(lockfile)
       from_tests, to_fork = IO.pipe
+      from_fork, to_tests = IO.pipe
       p1 = fork do
         expect(run_lock.test).to eq(true)
+        to_tests.puts "lock acquired"
         # Wait for the test to tell us we can exit before exiting
         from_tests.readline
         exit! 0
       end
 
-      wait_on_lock
+      wait_on_lock(from_fork)
 
       p2 = fork do
         expect(run_lock.test).to eq(false)
@@ -283,14 +283,16 @@ describe Chef::RunLock do
     it "test returns without waiting when the lock is acquired" do
       run_lock = Chef::RunLock.new(lockfile)
       from_tests, to_fork = IO.pipe
+      from_fork, to_tests = IO.pipe
       p1 = fork do
         run_lock.acquire
+        to_tests.puts "lock acquired"
         # Wait for the test to tell us we can exit before exiting
         from_tests.readline
         exit! 0
       end
 
-      wait_on_lock
+      wait_on_lock(from_fork)
       expect(run_lock.test).to eq(false)
 
       to_fork.puts "you can exit now"
@@ -393,9 +395,7 @@ describe Chef::RunLock do
           # Send it the kill signal over and over until it dies
           Timeout.timeout(CLIENT_PROCESS_TIMEOUT) do
             Process.kill(:KILL, pid)
-            until Process.waitpid2(pid, Process::WNOHANG)
-              sleep(0.05)
-            end
+            sleep(0.05) until Process.waitpid2(pid, Process::WNOHANG)
           end
           example.log_event("#{name}.stop finished (stopped pid #{pid})")
         # Process not found is perfectly fine when we're trying to kill a process :)
